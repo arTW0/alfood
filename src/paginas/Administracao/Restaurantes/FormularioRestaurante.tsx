@@ -1,23 +1,51 @@
 import { Button, TextField } from "@mui/material"
-import React, { useState } from "react"
+import axios from "axios"
+import React, { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import IRestaurante from "../../../interfaces/IRestaurante"
 
 const FormularioRestaurante = () => {
+  const parametros = useParams()
+  useEffect(() => {
+    if (parametros.id) {
+      axios.get<IRestaurante>(`http://localhost:8000/api/v2/restaurantes/${parametros.id}/`)
+        .then(resposta => setNomeRestaurante(resposta.data.nome))
+    }
+  }, [parametros])
   const [nomeRestaurante, setNomeRestaurante] = useState('')
   const aoSubmeterForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log('preciso enviar dados para a api')
-    console.log(nomeRestaurante)
+
+    if (parametros.id) {
+      axios.put(`http://localhost:8000/api/v2/restaurantes/${parametros.id}/`, {
+        nome: nomeRestaurante
+      })
+        .then(() => {
+          alert('Restaurante atualizado com sucesso!')
+        })
+    } else {
+      axios.post('http://localhost:8000/api/v2/restaurantes/', {
+        nome: nomeRestaurante
+      })
+        .then(() => {
+          alert('Restaurante cadastrado com sucesso!')
+        })
+    }
   }
 
   return <form onSubmit={aoSubmeterForm}>
     <TextField
       value={nomeRestaurante}
       onChange={event => setNomeRestaurante(event.target.value)}
-      id='standard-basic'
-      label='Standard'
+      label='Nome do Restaurante'
       variant='standard'
     />
-    <Button variant='outlined'>Oulined</Button>
+    <Button
+      type="submit"
+      variant='outlined'
+    >
+      Salvar
+    </Button>
   </form>
 }
 
