@@ -1,14 +1,14 @@
-import { Button, TextField } from "@mui/material"
-import axios from "axios"
+import { AppBar, Box, Button, Container, Link, Paper, TextField, Toolbar, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, Link as RouterLink } from "react-router-dom"
+import http from "../../../http"
 import IRestaurante from "../../../interfaces/IRestaurante"
 
 const FormularioRestaurante = () => {
   const parametros = useParams()
   useEffect(() => {
     if (parametros.id) {
-      axios.get<IRestaurante>(`http://localhost:8000/api/v2/restaurantes/${parametros.id}/`)
+      http.get<IRestaurante>(`/restaurantes/${parametros.id}/`)
         .then(resposta => setNomeRestaurante(resposta.data.nome))
     }
   }, [parametros])
@@ -17,14 +17,14 @@ const FormularioRestaurante = () => {
     event.preventDefault()
 
     if (parametros.id) {
-      axios.put(`http://localhost:8000/api/v2/restaurantes/${parametros.id}/`, {
+      http.put(`/restaurantes/${parametros.id}/`, {
         nome: nomeRestaurante
       })
         .then(() => {
           alert('Restaurante atualizado com sucesso!')
         })
     } else {
-      axios.post('http://localhost:8000/api/v2/restaurantes/', {
+      http.post('/restaurantes/', {
         nome: nomeRestaurante
       })
         .then(() => {
@@ -33,20 +33,68 @@ const FormularioRestaurante = () => {
     }
   }
 
-  return <form onSubmit={aoSubmeterForm}>
-    <TextField
-      value={nomeRestaurante}
-      onChange={event => setNomeRestaurante(event.target.value)}
-      label='Nome do Restaurante'
-      variant='standard'
-    />
-    <Button
-      type="submit"
-      variant='outlined'
-    >
-      Salvar
-    </Button>
-  </form>
+  return <>
+    <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar>
+          <Typography variant="h6">
+            Administração
+          </Typography>
+          <Box sx={{ display: 'flex', flexGrow: 1 }}>
+            <Link component={RouterLink} to='/admin/restaurantes'>
+              <Button sx={{ my: 2, color: 'white' }}>
+                Restaurantes
+              </Button>
+            </Link>
+            <Link component={RouterLink} to='/admin/restaurantes/novo'>
+              <Button sx={{ my: 2, color: 'white' }}>
+                Novo Restaurante
+              </Button>
+            </Link>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
+
+    <Box>
+      <Container sx={{ mt: 1 }} maxWidth='lg'>
+        <Paper sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexGrow: 1 }}
+          >
+            <Typography
+              variant="h6"
+              component="h1"
+            >
+              Formulário de Restaurantes
+            </Typography>
+            <Box
+              component="form"
+              sx={{ width: '50%' }}
+              onSubmit={aoSubmeterForm}>
+              <TextField
+                value={nomeRestaurante}
+                onChange={event => setNomeRestaurante(event.target.value)}
+                label='Nome do Restaurante'
+                variant='standard'
+                fullWidth
+                required
+              />
+              <Button sx={{
+                marginTop: 1
+              }}
+                type="submit"
+                variant='outlined'
+                fullWidth
+              >
+                Salvar
+              </Button>
+            </Box>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
+
+  </>
 }
 
 export default FormularioRestaurante
