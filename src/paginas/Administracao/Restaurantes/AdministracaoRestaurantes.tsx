@@ -19,45 +19,43 @@ const AdministracaoRestaurantes = () => {
       .then(resposta => setRestaurantes(resposta.data))
   }, [])
 
-  return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              Nome
-            </TableCell>
-            <TableCell>
-              Editar
-            </TableCell>
-            <TableCell>
+  return <TableContainer>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>
+            Nome
+          </TableCell>
+          <TableCell>
+            Editar
+          </TableCell>
+          <TableCell>
+            Excluir
+          </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {restaurantes.map(restaurante => <TableRow key={restaurante.id}>
+          <TableCell>
+            {restaurante.nome}
+          </TableCell>
+          <TableCell>
+            [<Link to={`/admin/restaurantes/${restaurante.id}`}>editar</Link>]
+          </TableCell>
+          <TableCell>
+            <Button
+              onClick={() => excluir(restaurante)}
+              color='error'
+              variant='outlined'
+            >
               Excluir
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {restaurantes.map(restaurante => <TableRow key={restaurante.id}>
-            <TableCell>
-              {restaurante.nome}
-            </TableCell>
-            <TableCell>
-              [<Link to={`/admin/restaurantes/${restaurante.id}`}>editar</Link>]
-            </TableCell>
-            <TableCell>
-              <Button
-                onClick={() => excluir(restaurante)}
-                color='error'
-                variant='outlined'
-              >
-                Excluir
-              </Button>
-            </TableCell>
-          </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  )
+            </Button>
+          </TableCell>
+        </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  </TableContainer>
 }
 
 export default AdministracaoRestaurantes
